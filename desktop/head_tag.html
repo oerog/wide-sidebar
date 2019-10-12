@@ -1,0 +1,193 @@
+<script>
+    $(document).ready(function(event) {
+        if (checkCookie("hiddenSidebar")) {
+           $("#sidebar").show();
+        }
+    })
+    function setCookie(cname, cvalue, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays*24*60*60*1000));
+        var expires = "expires="+d.toUTCString();
+        document.cookie = cname + "=" + cvalue + "; " + expires;
+    }
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0; i<ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1);
+            if (c.indexOf(name) != -1) return c.substring(name.length, c.length);
+        }
+        return "";
+    }
+    function checkCookie(cname) {
+        return cval = getCookie(cname) || false;
+    }
+    function hideSidebar() {
+        if (Discourse.User.current() !== null){
+            var cname = "hiddenSidebar";
+            var cdays = 30;
+        }
+        else {
+            var cname = "hiddenSidebar";
+            var cdays = 1;
+        }
+        $("#sidebar").hide();
+        setCookie(cname, true, cdays);
+        setTimeout(location.reload(), 2000); 
+    }
+</script>
+<script type="text/discourse-plugin" version="0.8">
+     api.onPageChange((url) => {
+        if (!checkCookie("hiddenSidebar")) {
+            var isCategory = /\/c\//;
+            if (url === "/" || url === "/latest" || isCategory.test(url) == true) {
+                document.getElementById("sidebar").style.display = "block";
+                document.getElementById("main").classList.add("responsive-sidebar");
+                getCategories();
+            }
+        }
+    });
+    if (checkCookie("hiddenSidebar")) {
+        document.getElementById("main").classList.add("narrow-wrap");
+    }	
+    function getCategories () {		
+    var xmlCategories = new XMLHttpRequest();
+    xmlCategories.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+		
+        var categories = JSON.parse(this.responseText);
+		var categoryList = "<div class='sidebar-cat-head'>Category<button id='hide-sidebar' onclick='hideSidebar();'>hide</button></div>";
+		
+        for (i=0; i < categories.category_list.categories.length; i++) {
+		  categoryList = categoryList + "<div class='sidebar-cat-wrapper' id='" 
+		                              + categories.category_list.categories[i].slug
+									  + "'>\n"
+									  + "<div class = 'sidebar-topic-count'>Topics: "
+									  + categories.category_list.categories[i].topics_all_time
+									  + "</div>\n"									  
+		                              + "<div class = 'sidebar-cat-title'><a href = '/c/" 
+		                              + categories.category_list.categories[i].slug + "'>"
+									  + categories.category_list.categories[i].name
+									  + "</a></div>\n"
+									  + "<div class = 'sidebar-cat-desc'>"
+									  + categories.category_list.categories[i].description
+									  + "</div>\n";
+          categoryList = categoryList + "</div>\n";
+
+		}
+
+        categoryList = categoryList + "<div class='twit-pat-wrap-sb'>\n"
+                                    + "  <a href='https://twitter.com/unstuckpolitics' target='_blank' rel='noopener'>\n"
+                                    + "    <img class='twit-pat-button-sb' src='https://unstuckpolitics.com/uploads/default/original/2X/f/fbb9b09b21dffed94342bda7145c7ac13804cfd1.png' />\n"
+                                    + "  </a>\n"
+                                    + "  <a href='https://www.patreon.com/unstuckpolitics' target='_blank' rel='noopener'>\n"
+                                    + "    <img class='twit-pat-button-sb' src='https://unstuckpolitics.com/uploads/default/original/2X/d/d0ed447d8355bce531d091c60296ae2b823d9301.png' />\n"
+                                    + "  </a>\n"
+                                    + "</div>\n";
+        document.getElementById("sidebar").innerHTML = categoryList;				
+
+      }
+    }
+    xmlCategories.open("GET", "/categories.json", true);
+    xmlCategories.send();
+  }
+</script>
+
+<script type="text/x-handlebars" data-template-name="discovery/topics">
+    {{#if redirectedReason}}
+      <div class="alert alert-info">{{redirectedReason}}</div>
+    {{/if}}
+    
+    {{#if showDismissAtTop}}
+      <div class="row">
+        {{#if showDismissRead}}
+          <button title="{{i18n 'topics.bulk.dismiss_tooltip'}}" id='dismiss-topics-top' class='btn btn-default dismiss-read' {{action "dismissReadPosts"}}>{{i18n 'topics.bulk.dismiss_button'}}</button>
+        {{/if}}
+        {{#if showResetNew}}
+        <button id='dismiss-new-top' class='btn btn-default dismiss-read' {{action "resetNew"}}>{{d-icon "check"}} {{i18n 'topics.bulk.dismiss_new'}}</button>
+        {{/if}}
+      </div>
+    {{/if}}
+    
+    {{#if model.sharedDrafts}}
+      {{topic-list
+        class="shared-drafts"
+        listTitle="shared_drafts.title"
+        top=top
+        hideCategory="true"
+        category=category
+        topics=model.sharedDrafts
+        discoveryList=true}}
+    {{/if}}
+    
+    {{bulk-select-button selected=selected action=(action "refresh") category=category}}
+
+    {{!-- SIDEBAR --}}
+    <div id="sidebar" style="display:none;"></div>
+
+    {{#discovery-topics-list model=model refresh=(action "refresh") incomingCount=topicTrackingState.incomingCount}}
+      {{#if top}}
+        <div class='top-lists'>
+          {{period-chooser period=period action=(action "changePeriod")}}
+        </div>
+      {{else}}
+        {{#if topicTrackingState.hasIncoming}}
+          <div class="show-more {{if hasTopics 'has-topics'}}">
+            <div class='alert alert-info clickable' {{action "showInserted"}}>
+              <a tabindex="0" href="" {{action "showInserted"}}>
+                {{count-i18n key="topic_count_" suffix=topicTrackingState.filter count=topicTrackingState.incomingCount}}
+              </a>
+            </div>
+          </div>
+        {{/if}}
+      {{/if}}
+    
+      {{#if hasTopics}}
+        {{topic-list
+          highlightLastVisited=true
+          top=top
+          showTopicPostBadges=showTopicPostBadges
+          showPosters=true
+          canBulkSelect=canBulkSelect
+          changeSort=(action "changeSort")
+          toggleBulkSelect=(action "toggleBulkSelect")
+          hideCategory=model.hideCategory
+          order=order
+          ascending=ascending
+          bulkSelectEnabled=bulkSelectEnabled
+          selected=selected
+          expandGloballyPinned=expandGloballyPinned
+          expandAllPinned=expandAllPinned
+          category=category
+          topics=model.topics
+          discoveryList=true}}
+      {{/if}}
+    {{/discovery-topics-list}}
+
+    <footer class='topic-list-bottom'>
+      {{conditional-loading-spinner condition=model.loadingMore}}
+      {{#if allLoaded}}
+        {{#if showDismissRead}}
+          <button title="{{i18n 'topics.bulk.dismiss_tooltip'}}" id='dismiss-topics' class='btn btn-default dismiss-read' {{action "dismissReadPosts"}}>{{i18n 'topics.bulk.dismiss_button'}}</button>
+        {{/if}}
+        {{#if showResetNew}}
+          <button id='dismiss-new' class='btn btn-default dismiss-read' {{action "resetNew"}}>
+            {{d-icon "check"}} {{i18n 'topics.bulk.dismiss_new'}}</button>
+        {{/if}}
+    
+        {{#footer-message education=footerEducation message=footerMessage}}
+          {{#if latest}}
+            {{#if canCreateTopicOnCategory}}<a href {{action "createTopic"}}>{{i18n 'topic.suggest_create_topic'}}</a>{{/if}}
+          {{else if top}}
+            {{#link-to "discovery.categories"}}{{i18n 'topic.browse_all_categories'}}{{/link-to}}, {{#link-to 'discovery.latest'}}{{i18n 'topic.view_latest_topics'}}{{/link-to}} {{i18n 'or'}} {{i18n 'filters.top.other_periods'}}
+            {{top-period-buttons period=period action=(action "changePeriod")}}
+          {{else}}
+            {{#link-to "discovery.categories"}} {{i18n 'topic.browse_all_categories'}}{{/link-to}} {{i18n 'or'}} {{#link-to 'discovery.latest'}}{{i18n 'topic.view_latest_topics'}}{{/link-to}}
+          {{/if}}
+        {{/footer-message}}
+    
+      {{/if}}
+    </footer>
+</script>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>

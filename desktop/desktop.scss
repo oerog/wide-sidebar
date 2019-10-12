@@ -1,0 +1,198 @@
+.topic-list thead   {     
+    background-color:#444 !important; 
+    border-bottom:solid 1px #222!important;
+}
+body{background-color:#222222 !important }
+/* -----Sidebar Stuff-----*/
+#hide-sidebar {
+    font-size:1em;
+    float:right;
+    background-color: #555;
+    padding: 2px 10px;
+    color: #aaa;
+    border:none;
+}
+#hide-sidebar:hover {
+    cursor: pointer;
+}
+#sidebar {
+    width: 0;
+    max-width: 400px;
+    float: left;
+    background-color:#333;
+    position: relative;
+    z-index: 1;
+    margin-left: 0px;
+    margin-right: 30px;
+}
+.sidebar-cat-wrapper {
+    background-color: #3a3a3a;
+    padding: 10px 20px 10px 15px;
+    border-bottom: 1px #222 solid;
+    border-right: 1px #222 solid;
+}
+.sidebar-cat-title {
+    font-weight: bold;
+    font-size: 1.25em;
+}
+.sidebar-topic-count {
+    float: right;
+}
+.sidebar-cat-desc {
+    padding: 10px 10px 10px 5px;
+}
+.sidebar-cat-head {
+    background-color: #444;
+    padding: 12px 15px;
+    color: #9f9f9f;
+}
+
+.topic-list {
+    width: auto;
+}
+.navigation-categories.categories-list .wrap {
+        max-width: 1110px;
+        margin: 0 auto;
+}
+.navigation-categories.categories-list .d-header>.wrap {
+    width: 90%;
+    max-width: 1680px;
+    padding: 0 2%;
+}
+.d-header>.wrap, .wrap {
+    width: 90%;
+    max-width: 1680px;
+    padding: 0 2%;
+}
+@media (min-width: 1440px) {
+    .d-header>.wrap, .wrap {
+        width: 90%;
+        padding: 0 5%;
+    }  
+} 
+@media (min-width: 1530px) {
+    .topic-list td.main-link {
+        width: 58%;
+        padding-right:12px
+    }
+}
+@media (min-width: 1600px) {
+    .topic-list td.main-link {
+        width: 61%;
+    }
+}
+@media (min-width: 1680px) {
+    .topic-list td.main-link {
+        width: 63%;
+    }
+    #sidebar {
+        max-width: 450px;
+    }    
+}
+@media (min-width: 1750px) {
+    .topic-list td.main-link {
+        width: 62%;
+    }
+}
+@media (min-width: 1820px) {
+    .topic-list td.main-link {
+        width: 65%;
+    }
+}
+@media (min-width: 1900px) {
+    .topic-list td.main-link {
+        width: 780px;
+    }
+    #sidebar {
+        margin-right: 50px;
+    }
+}
+
+
+.d-header>.wrap, .categories-list .wrap, .navigation-topics .wrap {
+    max-width: 1680px;
+}
+#main.narrow-wrap .wrap {max-width: 1200px !important; }
+#main.narrow-wrap .topic-list {width: 100% !important; }
+#main.narrow-wrap .topic-list td.main-link {width: auto !important;}
+#main.narrow-wrap .d-header>.wrap {
+    width: 1680px !important;
+    padding: 0 5%  
+}
+.archetype-regular #main.narrow-wrap .wrap, .archetype-private_message #main.narrow-wrap .wrap,  .user-summary-page #main.narrow-wrap .wrap  {
+    width: 90% !important;
+    max-width: 1680px !important;
+}
+
+/*** Twitter Buttons Below Header ***/ 
+.twit-pat-wrap {
+    float: right;
+    padding-bottom: 20px;
+    display:none;
+}
+.twit-pat-button {
+	height: auto;
+	width: 200px;
+	margin-left: 20px
+}
+.twit-pat-button:hover {
+	opacity: .8
+}
+/*** Twitter Buttons Below Sidebar ***/ 
+.twit-pat-wrap-sb {
+    text-align: center;
+}
+.twit-pat-button-sb {
+	height: auto;
+	width: 160px;
+	margin: 10px;
+}
+.twit-pat-button-sb:hover {
+	opacity: .8
+}
+#main.narrow-wrap .twit-pat-wrap {
+    display:block;
+    float: right;
+    padding-bottom: 20px;
+}
+#main.narrow-wrap .twit-pat-wrap-sb {
+    display: none
+}
+/********** hideSidebar cookie absent *****************/
+#main.responsive-sidebar #sidebar {
+    width: 30%;
+}
+@media (max-width: 767px) {
+    #sidebar {
+        display: none !important;
+    }    
+}
+@media screen and (max-width: 1024px) {
+    #main.responsive-sidebar #sidebar {
+    width: 35%;
+    }
+}
+@media screen and (min-width: 768px) and (max-width: 1279px) {
+    #main.responsive-sidebar .topic-list .posters>a {
+        display: none;
+    }
+    #main.responsive-sidebar .topic-list .posters>a:last-of-type {
+        display: block;
+    }
+    #main.responsive-sidebar .topic-list .posters {
+        width: 30px;
+        text-align: center;
+    }
+}
+@media screen and (min-width: 768px) and (max-width: 800px) {
+     #main.responsive-sidebar .topic-list .posters>a:last-of-type {
+        display: none;
+    }
+     #main.responsive-sidebar .topic-list .posters {
+        width: 0px;
+    }
+}
+#bbv {
+    display:none;
+}
+/********** end of sidebar ***********/
