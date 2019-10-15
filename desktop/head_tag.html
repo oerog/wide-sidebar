@@ -41,7 +41,8 @@
      api.onPageChange((url) => {
         if (!checkCookie("hiddenSidebar")) {
             var isCategory = /\/c\//;
-            if (url === "/" || url === "/latest" || isCategory.test(url) == true) {
+            var match = "/latest"; 
+            if (url === "/"  || (url.substring(0, match.length) === match)  ||  isCategory.test(url) == true) {
                 document.getElementById("sidebar").style.display = "block";
                 document.getElementById("main").classList.add("responsive-sidebar");
                 getCategories();
